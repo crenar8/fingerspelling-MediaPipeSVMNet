@@ -28,7 +28,7 @@ def load_data_from_dir(cartella):
 training_directory = 'dataset/training'
 test_directory = 'dataset/test'
 
-# Training / Test data loading
+# Training data loading
 training_data = load_data_from_dir(training_directory)
 test_data = load_data_from_dir(test_directory)
 
@@ -45,22 +45,17 @@ for claz in os.listdir(test_directory):
     test_class_data_number = len(os.listdir(test_subdirectory))
     test_labels.extend([claz] * test_class_data_number)
 
-# Data / Labels merging
-data = np.concatenate((training_data, test_data), axis=0)
-labels = np.concatenate((training_labels, test_labels), axis=0)
-
 # SVM classifier creation
 model = SVC(kernel='linear')
 
 # SVM Training
-model.fit(data.reshape(data.shape[0], -1), labels)
-
+model.fit(training_data.reshape(training_data.shape[0], -1), training_labels)
 
 # Model saving
 model_name = 'asl_fingerspelling_model.pkl'
 joblib.dump(model, model_name)
 
-# Model Evaluation
+# Model Evaluation using the Test Set
 y_pred = model.predict(test_data.reshape(test_data.shape[0], -1))
 report = classification_report(test_labels, y_pred)
 

@@ -27,8 +27,21 @@ def detect_hand_data_points(image_path):
     if results.multi_hand_landmarks:
         for hand_landmarks in results.multi_hand_landmarks:
             # Coordinates extractions
-            for landmark in hand_landmarks.landmark:
-                hand_data_points.append((landmark.x, landmark.y, landmark.z))
+            landmarks = hand_landmarks.landmark
+            for landmark in landmarks:
+                min_x = min([landmark.x for landmark in landmarks])
+                max_x = max([landmark.x for landmark in landmarks])
+                min_y = min([landmark.y for landmark in landmarks])
+                max_y = max([landmark.y for landmark in landmarks])
+
+                # Width & Height of the Hand Bounding Box
+                bbox_width = max_x - min_x
+                bbox_height = max_y - min_y
+
+                # Normalization of x / y landmarks coordinates in the bounding box.
+                normalized_lm_x = (landmark.x - min_x) / bbox_width
+                normalized_lm_y = (landmark.y - min_y) / bbox_height
+                hand_data_points.append((normalized_lm_x, normalized_lm_y, landmark.z))
 
     return hand_data_points
 
