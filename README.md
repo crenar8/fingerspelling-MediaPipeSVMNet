@@ -83,6 +83,8 @@ python fingerspelling.py
 
 5. The SVM model will classify the coordinates of Hand Data Points and display the predicted ASL alphabet sign on the
 
+![Instructions.png](..%2FInstructions.png)
+
 ## Customization
 
 If you want to customize or train your own model, you can modify the code in the `fingerspelling_model_creation.py` file. Adjust the model architecture, hyperparameters, and training configurations according to your requirements.
