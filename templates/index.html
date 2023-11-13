@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASL Fingerspelling Recognition</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Brush+Script+MT:wght@400&display=swap">
+</head>
+<body>
+    <div class="container">
+        <h1>ASL Fingerspelling Recognition</h1>
+        <p class="instruction-text">
+            To use this web application, use your right hand to make the gesture of the ASL letter you want to print. Then, use your left hand to press the "s" button on your keyboard. You can continue making several gestures to type your sentence. You can also press Enter on the keyboard to clear it and restart.
+        </p>
+        <div class="content">
+            <video id="camera" width="640" height="480" autoplay></video>
+            <img id="instructions" src="{{ url_for('static', filename='Instructions.png') }}" alt="Instructions">
+        </div>
+        <p id="phrase"></p>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            const video = document.getElementById("camera");
+            const phraseElement = document.getElementById("phrase");
+
+            let predictedLetters = [];
+
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(function(stream) {
+                    video.srcObject = stream;
+                    video.play();
+                })
+                .catch(function(error) {
+                    console.error("Errore durante l'accesso alla webcam:", error);
+                });
+
+            $(document).keypress(function(event) {
+                if (event.which === 115) {
+                    captureAndSendImage();
+                } else if (event.which === 13) {
+                    resetPhrase();
+                } else if (event.which === 127) {
+                    cancelLastPrediction();
+                }
+            });
+
+            function captureAndSendImage() {
+                const canvas = document.createElement("canvas");
+                const context = canvas.getContext("2d");
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Converti l'immagine in un oggetto Blob
+                canvas.toBlob(function(blob) {
+                    // Create a FormData object
+                    const formData = new FormData();
+                    formData.append("image", blob, "image.jpg");
+
+                    // Send the image to the server
+                    $.ajax({
+                        url: "/process",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function(data) {
+                            // Update the phrase
+                            const predictedLetter = data.predicted_letter;
+                            if (predictedLetter) {
+                                predictedLetters.push(predictedLetter);
+                                const phrase = predictedLetters.join("");
+                                phraseElement.textContent = phrase;
+                            }
+                        },
+                        error: function(error) {
+                            console.error("Errore durante l'invio dell'immagine:", error);
+                        }
+                    });
+                }, "image/jpeg");
+            }
+
+            function resetPhrase() {
+                predictedLetters = [];
+                phraseElement.textContent = "";
+            }
+
+            function cancelLastPrediction() {
+                predictedLetters.pop();
+                const phrase = predictedLetters.join("");
+                phraseElement.textContent = phrase;
+            }
+
+        });
+    </script>
+</body>
+</html>

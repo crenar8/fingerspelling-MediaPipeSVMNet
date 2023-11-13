@@ -1,0 +1,47 @@
+body {
+    margin: 0;
+    background-image: url('Background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    backdrop-filter: blur(5px);
+}
+
+.container {
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
+    font-size: 48px;
+    font-weight: 700;
+}
+
+.content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#camera, #instructions {
+    max-height: 480px;
+    max-width: 50%;
+    object-fit: contain;
+    border-radius: 15px;
+}
+
+#phrase {
+    font-family: 'Brush Script MT', cursive;
+    text-transform: uppercase;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.instruction-text {
+    font-size: 1.2em;
+    font-family: 'Montserrat', sans-serif;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    color: white;
+}
