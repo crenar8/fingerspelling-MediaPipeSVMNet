@@ -27,7 +27,7 @@ api_lock = threading.Lock()
 
 
 @app.route('/')
-@basic_auth.required
+#@basic_auth.required
 def index():
     return render_template('index.html')
 
