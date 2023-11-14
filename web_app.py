@@ -6,7 +6,6 @@ import mediapipe as mp
 import numpy as np
 from PIL import Image
 from flask import Flask, render_template, request, jsonify
-from flask_basicauth import BasicAuth
 
 # MediaPipe Hands init
 mpHands = mp.solutions.hands
@@ -18,10 +17,10 @@ model = joblib.load('asl_fingerspelling_model.pkl')
 
 app = Flask(__name__, static_url_path='', static_folder='static', template_folder='templates')
 
-app.config['BASIC_AUTH_USERNAME'] = 'Uninettuno'
-app.config['BASIC_AUTH_PASSWORD'] = 'Dervishi2811'
+#app.config['BASIC_AUTH_USERNAME'] = 'Uninettuno'
+#app.config['BASIC_AUTH_PASSWORD'] = 'Dervishi2811'
 
-basic_auth = BasicAuth(app)
+#basic_auth = BasicAuth(app)
 
 api_lock = threading.Lock()
 
